@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSE 中文卷一：手法題攻榜 (2025 終極版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --ink: #1c1917; --paper: #fdfbf7; --accent: #b45309; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--paper); color: var(--ink); }
+        .serif { font-family: 'Noto Serif TC', serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 320px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-btn.active { border-bottom: 3px solid var(--accent); color: var(--accent); font-weight: 700; }
+        .glass-card { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(8px); border: 1px solid rgba(214, 211, 209, 0.5); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Library UI Specific Styles */
+        .lib-card { border-radius: 1.5rem; overflow: hidden; transition: transform 0.2s; border: 1px solid #e5e7eb; }
+        .lib-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .lib-section-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-white/80 sticky top-0 z-50 border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🖋️</span>
+                    <h1 class="text-xl font-bold tracking-tighter text-stone-800">DSE 手法題攻榜 <span class="text-amber-700">2025 專業版</span></h1>
+                </div>
+                <nav class="flex space-x-2 overflow-x-auto no-scrollbar">
+                    <button onclick="openTab('home')" id="btn-home" class="nav-btn active px-3 py-2 text-sm whitespace-nowrap">趨勢分析</button>
+                    <button onclick="openTab('lib')" id="btn-lib" class="nav-btn px-3 py-2 text-sm whitespace-nowrap">手法圖書館</button>
+                    <button onclick="openTab('lab')" id="btn-lab" class="nav-btn px-3 py-2 text-sm whitespace-nowrap">答題實驗室</button>
+                    <button onclick="openTab('exam')" id="btn-exam" class="nav-btn px-3 py-2 text-sm whitespace-nowrap">真題試煉</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+
+        <section id="home" class="tab-content active">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-stone-900 mb-4 serif">為什麼你要重視「手法題」？</h2>
+                <p class="text-stone-600 max-w-2xl mx-auto italic">「手法題考的不是定義，而是作者如何透過工具搭建情感的橋樑。」</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="glass-card p-6 rounded-2xl shadow-sm">
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="w-2 h-6 bg-amber-600 mr-2 rounded"></span>
+                        近年手法題熱門程度 (2021-2024)
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl shadow-sm">
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="w-2 h-6 bg-stone-700 mr-2 rounded"></span>
+                        高分卷「4 分手法題」得分權重
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+                <h3 class="font-bold text-amber-900 mb-4 flex items-center text-xl">
+                    <span>💡</span> 考官報告提示
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <p class="font-bold text-stone-800 mb-2">術語誤用</p>
+                        <p class="text-sm text-stone-600">分不清「反襯」與「對比」。緊記：反襯有主次之分，旨在突出主體。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <p class="font-bold text-stone-800 mb-2">忽略文本</p>
+                        <p class="text-sm text-stone-600">只會寫背好的作用模板，沒有引用原文具體詞彙或具體描寫。</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <p class="font-bold text-stone-800 mb-2">缺乏昇華</p>
+                        <p class="text-sm text-stone-600">未能聯繫主旨。如環境描寫通常為反襯生命力、渲染氣氛或寄託志向。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lib" class="tab-content">
+            <div class="mb-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold serif text-stone-800">手法圖書館</h2>
+                        <p class="text-stone-500 mt-1">收錄歷年精選，針對易混淆技巧進行深度剖析。</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2" id="filter-container">
+                        <button onclick="filterLib('all')" class="px-4 py-1.5 bg-stone-800 text-white rounded-full text-xs font-bold transition-all">全部</button>
+                        <button onclick="filterLib('辨析')" class="px-4 py-1.5 bg-amber-100 text-amber-800 rounded-full text-xs font-bold border border-amber-200">技巧辨析</button>
+                        <button onclick="filterLib('抒情')" class="px-4 py-1.5 bg-stone-200 rounded-full text-xs font-bold">抒情手法</button>
+                        <button onclick="filterLib('論證')" class="px-4 py-1.5 bg-stone-200 rounded-full text-xs font-bold">論證/說明</button>
+                        <button onclick="filterLib('描寫')" class="px-4 py-1.5 bg-stone-200 rounded-full text-xs font-bold">敘事/描寫</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="lib-grid">
+                </div>
+        </section>
+
+        <section id="lab" class="tab-content">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold serif">答題實驗室：實戰演練</h2>
+                    <p class="text-stone-600">選擇不同年份真題情境，練習精準答題框架。</p>
+                </div>
+
+                <div class="flex justify-center mb-6 space-x-4">
+                    <button onclick="loadLab(0)" class="lab-tab-btn px-6 py-2 rounded-full border-2 border-stone-200 font-bold transition-all">2023</button>
+                    <button onclick="loadLab(1)" class="lab-tab-btn px-6 py-2 rounded-full border-2 border-stone-200 font-bold transition-all">2024</button>
+                    <button onclick="loadLab(2)" class="lab-tab-btn px-6 py-2 rounded-full border-2 border-stone-200 font-bold transition-all">2021</button>
+                </div>
+
+                <div class="glass-card rounded-3xl overflow-hidden shadow-xl border-stone-200">
+                    <div class="bg-stone-800 p-8 text-white">
+                        <p class="text-xs uppercase tracking-widest text-amber-400 font-bold mb-3" id="lab-context-title">實戰文本選段</p>
+                        <div class="space-y-4 serif italic text-stone-100 text-lg leading-relaxed" id="lab-context-text"></div>
+                        <div class="mt-6 pt-4 border-t border-stone-700">
+                            <p class="text-amber-100 font-bold" id="lab-question-text">問題：...</p>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-bold text-stone-800 mb-2 flex items-center">
+                                    <span class="w-6 h-6 bg-stone-200 rounded-full flex items-center justify-center text-xs mr-2">1</span> 指明手法
+                                </h4>
+                                <select id="lab-s1" class="w-full p-4 border-2 border-stone-100 rounded-xl outline-none focus:border-amber-500 bg-stone-50">
+                                    <option value="">選擇術語...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-stone-800 mb-2 flex items-center">
+                                    <span class="w-6 h-6 bg-stone-200 rounded-full flex items-center justify-center text-xs mr-2">2</span> 分析文本線索
+                                </h4>
+                                <textarea id="lab-s2" class="w-full p-4 border-2 border-stone-100 rounded-xl h-24 outline-none focus:border-amber-500 bg-stone-50" placeholder="說明文本如何體現該手法..."></textarea>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-stone-800 mb-2 flex items-center">
+                                    <span class="w-6 h-6 bg-stone-200 rounded-full flex items-center justify-center text-xs mr-2">3</span> 闡述作用 (聯繫主旨)
+                                </h4>
+                                <textarea id="lab-s3" class="w-full p-4 border-2 border-stone-100 rounded-xl h-24 outline-none focus:border-amber-500 bg-stone-50" placeholder="這如何呼應作者的情感或文章核心？"></textarea>
+                            </div>
+
+                            <button onclick="checkLab()" class="w-full py-4 bg-amber-700 text-white font-bold rounded-2xl hover:bg-stone-900 transition-all shadow-lg shadow-amber-900/20">生成標準範文</button>
+                        </div>
+
+                        <div id="lab-result" class="hidden mt-8 p-6 bg-stone-50 border-2 border-stone-200 rounded-2xl">
+                            <h5 class="font-bold text-stone-800 mb-3 border-b pb-2">💡 滿分模型 (4/4)：</h5>
+                            <p class="text-stone-700 leading-relaxed serif" id="lab-feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exam" class="tab-content">
+            <div class="mb-8 flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-bold serif">歷屆手法對戰</h2>
+                    <p class="text-stone-500">快速檢測你的辨析速度。</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-stone-400 uppercase font-bold">當前得分</p>
+                    <p class="text-2xl font-bold text-amber-700" id="quiz-score">0 / 5</p>
+                </div>
+            </div>
+            <div class="space-y-6" id="quiz-container"></div>
+        </section>
+
+    </main>
+
+    <script>
+        // 1. UPDATED DATA WITH UI SEGMENTS
+        const techData = [
+            { 
+                cat: '辨析', year: '技巧辨析', source: '邏輯專欄', title: '正反論證 vs 對比論證', 
+                example: '案例 A：如果你勤奮，就會成功；若你懶惰，便會失敗。/ 案例 B：松樹在嚴寒中挺拔，而雜草一霜降就枯萎。',
+                correct: '【正反】是以同一個立場的「正」與「反」作假設說明（強調後果）；【對比】是將兩種不同性質的事物並列比較（強調特質差異）。',
+                wrong: '混淆兩者。緊記：正反論證通常帶有「如果...就」的假設性質；對比論證則是「事實對事实」。',
+                type: '辨析' 
+            },
+            { 
+                cat: '抒情', year: '2023', source: '《一竿冷》', title: '以景結情', 
+                example: '末段描寫蓑衣戴笠老人在江面垂釣，像極了一尊被冷卻了的塑像。',
+                correct: '將「孤傲」的精神境界寄託於「塑像」與「寒江」的畫面中，使情感表達含蓄深遠，餘韻不盡。',
+                wrong: '只描述風景優美，未點出「景」與「情」的具體融合點，無法解釋為何要以此收結。',
+                type: '抒情' 
+            },
+            { 
+                cat: '描寫', year: '2024', source: '《繁盛》', title: '反襯 (以靜襯動)', 
+                example: '在「死一般寂靜」的黑夜中，向日葵在月光下頑強地轉頭。',
+                correct: '以四周環境的「死寂」與「焦黑」反襯向日葵的「生機」與「色澤」，突出生命力的頑強。',
+                wrong: '誤認為是「對比」。對比是兩者地位平等；反襯則是利用環境（次）來突出主體（主）。',
+                type: '描寫' 
+            },
+            { 
+                cat: '論證', year: '2022', source: '《心靈的賬簿》', title: '比喻論證', 
+                example: '「心靈是一本賬簿，痛苦是收入，享樂是支出。」',
+                correct: '將抽象的「人生閱歷」比喻為「會計賬簿」，使讀者更易理解「痛苦」對於豐富心靈的價值。',
+                wrong: '流於修辭層面的「比喻」分析，忽略了其目的是為了「論證」某個深刻的人生道理。',
+                type: '論證' 
+            }
+        ];
+
+        const labScenarios = [
+            {
+                year: "2023",
+                context: "一葉扁舟，在空闊的江心，蓑衣戴笠老人在江面垂釣。那景象，像極了一尊被冷卻了的塑像，在時間的洪流中巋然不動。",
+                question: "文章以垂釣景象收結全文，有何巧妙之處？(4分)",
+                options: ["以景結情 / 象徵", "直接抒情", "對比論證"],
+                feedback: "<b>[術語]</b> 以景結情（或象徵）。<br><b>[文本]</b> 透過描寫「江心」、「空闊」的寂靜環境，以及老人如「塑像」般「巋然不動」的垂釣姿態。<br><b>[作用]</b> 呼應全文「冷」與「孤高」的基調；將抽象的「孤傲精神」具象化，昇華作者對生命美學之嚮往。"
+            },
+            {
+                year: "2024",
+                context: "在焦黑的土地上，我竟看見一朵向日葵在月光下頑強地轉頭。四周是死一般的寂靜，唯有那抹金黃在晚風中微微顫動。",
+                question: "作者描寫向日葵與四周環境的關係，運用了什麼手法？(4分)",
+                options: ["反襯 / 襯托", "正面描寫", "借代修辭"],
+                feedback: "<b>[術語]</b> 反襯。<br><b>[文本]</b> 以環境的「焦黑」與「死一般寂靜」，襯托向日葵「金黃」與「顫動」的姿態。<br><b>[作用]</b> 強烈對比出生命在困境中的頑強，突出「繁盛」是內在精神的爆發，深化主題。"
+            },
+            {
+                year: "2021",
+                context: "那一袋金燦燦的蜜柑，在火車昏暗的車廂裡閃爍著光芒。它不是水果，它是姊姊那份在貧窮中依然厚重的守望。",
+                question: "「蜜柑」在文中有什麼作用？試分析其抒情手法。(4分)",
+                options: ["借物抒情", "借景抒情", "動作描寫"],
+                feedback: "<b>[術語]</b> 借物抒情。<br><b>[文本]</b> 以具體的「蜜柑」作為情感載體，並以其亮色對比車廂的「昏暗」。<br><b>[作用]</b> 將抽象的姊弟深情具象化；「蜜柑」象徵了貧苦生活中的希望亮點，感人至深。"
+            }
+        ];
+
+        // 2. LOGIC & UI RENDERING
+        function renderLib(filter = 'all') {
+            const grid = document.getElementById('lib-grid');
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? techData : techData.filter(t => t.cat.includes(filter) || t.type.includes(filter));
+            
+            filtered.forEach(tech => {
+                const card = document.createElement('div');
+                card.className = "lib-card bg-white flex flex-col";
+                card.innerHTML = `
+                    <div class="p-5 border-b border-stone-100 bg-stone-50 flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded mr-2 uppercase">${tech.year}</span>
+                            <span class="text-[10px] font-black text-stone-500 bg-stone-200 px-2 py-0.5 rounded uppercase">${tech.cat}</span>
+                        </div>
+                        <h4 class="font-bold text-stone-800">${tech.title}</h4>
+                    </div>
+                    
+                    <div class="p-5 space-y-4 flex-grow">
+                        <div>
+                            <span class="lib-section-label text-stone-400">📝 原文例子 / 文本情境</span>
+                            <p class="text-sm text-stone-700 italic serif leading-relaxed border-l-2 border-stone-200 pl-3">${tech.example}</p>
+                        </div>
+                        
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                            <span class="lib-section-label text-emerald-600">✅ 正確示範 (結合分析)</span>
+                            <p class="text-sm text-emerald-900 font-medium leading-relaxed">${tech.correct}</p>
+                        </div>
+                        
+                        <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                            <span class="lib-section-label text-red-500">❌ 常見誤區 / 扣分位</span>
+                            <p class="text-sm text-red-800 leading-relaxed">${tech.wrong}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="px-5 py-3 bg-stone-50 text-[10px] text-stone-400 font-bold border-t border-stone-100">
+                        SOURCE: ${tech.source}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function loadLab(idx) {
+            const scenario = labScenarios[idx];
+            document.getElementById('lab-context-text').innerText = scenario.context;
+            document.getElementById('lab-question-text').innerText = "問題：" + scenario.question;
+            
+            const select = document.getElementById('lab-s1');
+            select.innerHTML = '<option value="">選擇術語...</option>';
+            scenario.options.forEach((opt, i) => {
+                const o = document.createElement('option');
+                o.value = (i === 0) ? "correct" : "wrong";
+                o.innerText = opt;
+                select.appendChild(o);
+            });
+
+            document.getElementById('lab-result').classList.add('hidden');
+            document.querySelectorAll('.lab-tab-btn').forEach((b, i) => {
+                if(i === idx) {
+                    b.classList.add('bg-stone-800', 'text-white', 'border-stone-800');
+                    b.classList.remove('text-stone-500');
+                } else {
+                    b.classList.remove('bg-stone-800', 'text-white', 'border-stone-800');
+                    b.classList.add('text-stone-500');
+                }
+            });
+        }
+
+        // --- Original Helper Functions ---
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById(`btn-${tabId}`).classList.add('active');
+            if(tabId === 'home') renderCharts();
+        }
+
+        function filterLib(cat) {
+            renderLib(cat);
+            document.querySelectorAll('#filter-container button').forEach(btn => {
+                if(btn.innerText.includes(cat) || (cat === 'all' && btn.innerText === '全部')) {
+                    btn.classList.add('bg-stone-800', 'text-white');
+                    btn.classList.remove('bg-stone-200', 'text-stone-800');
+                } else {
+                    btn.classList.remove('bg-stone-800', 'text-white');
+                    btn.classList.add('bg-stone-200');
+                }
+            });
+        }
+
+        function checkLab() {
+            const s1 = document.getElementById('lab-s1').value;
+            const res = document.getElementById('lab-result');
+            if(!s1) { alert("請先選擇術語！"); return; }
+            res.classList.remove('hidden');
+            document.getElementById('lab-feedback-text').innerHTML = labScenarios.find(s => s.context === document.getElementById('lab-context-text').innerText).feedback;
+            res.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Quiz Logic
+        const quizQuestions = [
+            { q: "【2022 Q16】『每個人都是一個宇宙』是哪種修辭？", options: ["明喻", "暗喻", "借喻", "擬人"], correct: 1, exp: "喻詞為「是」，本體與喻體均出現。" },
+            { q: "【2024 Q18】《繁盛》中『虛實交錯』的主要作用是？", options: ["單純裝飾", "以想像的希望襯托現實的荒涼", "記錄歷史", "增加字數"], correct: 1, exp: "「虛」指心中期盼，「實」指眼前景物，互相對照。" },
+            { q: "【2021 Q15】『姑娘把頭伸到窗外，目不轉睛地盯着...』屬於？", options: ["肖像描寫", "行動描寫", "心理描寫", "語言描寫"], correct: 1, exp: "「伸頭」、「盯」是具體動作。" },
+            { q: "【2023 Q19】《一竿冷》結尾景象與文章開頭『冷』形成：", options: ["先抑後揚", "首尾呼應", "層層深入", "虛實對比"], correct: 1, exp: "皆圍繞「冷」意象，使結構嚴密。" },
+            { q: "【2024 Q11】作者以『死寂的黑色』對比『向日葵的黃色』，這是：", options: ["襯托手法", "比喻論證", "借喻抒情", "誇張修辭"], correct: 0, exp: "以惡劣環境突出向日葵的生機。" }
+        ];
+
+        let quizScore = 0;
+        let answered = [];
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            quizQuestions.forEach((q, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = "glass-card p-6 rounded-2xl";
+                qDiv.innerHTML = `
+                    <p class="font-bold text-stone-800 mb-4">${q.q}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        ${q.options.map((opt, i) => `
+                            <button onclick="submitQuiz(${idx}, ${i}, this)" class="text-left px-4 py-3 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors text-sm">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="q-exp-${idx}" class="hidden mt-4 text-sm p-3 bg-amber-50 rounded-lg text-amber-900"></div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+
+        window.submitQuiz = function(qIdx, optIdx, btn) {
+            if(answered.includes(qIdx)) return;
+            const q = quizQuestions[qIdx];
+            answered.push(qIdx);
+            if(optIdx === q.correct) {
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                quizScore++;
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+            }
+            const expDiv = document.getElementById(`q-exp-${qIdx}`);
+            expDiv.innerHTML = `<strong>${optIdx === q.correct ? '正確！' : '錯誤！'}</strong> ${q.exp}`;
+            expDiv.classList.remove('hidden');
+            document.getElementById('quiz-score').innerText = `${quizScore} / 5`;
+        }
+
+        function renderCharts() {
+            const ctxTrend = document.getElementById('trendChart').getContext('2d');
+            new Chart(ctxTrend, {
+                type: 'bar',
+                data: {
+                    labels: ['抒情', '論證', '描寫', '修辭'],
+                    datasets: [{ label: '頻率', data: [8, 6, 9, 7], backgroundColor: ['#b45309', '#78716c', '#d6d3d1', '#f59e0b'], borderRadius: 8 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const ctxScore = document.getElementById('scoreChart').getContext('2d');
+            new Chart(ctxScore, {
+                type: 'doughnut',
+                data: {
+                    labels: ['術語', '文本', '作用'],
+                    datasets: [{ data: [1, 1, 2], backgroundColor: ['#1c1917', '#78716c', '#b45309'] }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCharts();
+            renderLib();
+            loadLab(0);
+            renderQuiz();
+        });
+    </script>
+</body>
+</html>
